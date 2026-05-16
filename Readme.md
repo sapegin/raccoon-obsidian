@@ -1,11 +1,12 @@
-# Raccoon Obsidian
+# Obsidian plugins
 
-Monorepo of Artem Sapegin's Obsidian plugins, built and installed locally
-(no marketplace round-trip) by [sync-obsidian-plugins](https://github.com/sapegin/dotfiles/blob/master/bin/sync-obsidian-plugins).
+Monorepo of [Artem Sapegin](https://sapegin.me/)’s Obsidian plugins, built and installed locally (no marketplace round-trip) by [sync-obsidian-plugins](https://github.com/sapegin/dotfiles/blob/master/bin/sync-obsidian-plugins) script.
+
+[![Washing your code. A book on clean code for frontend developers](https://sapegin.me/images/washing-code-github.jpg)](https://sapegin.me/book/)
 
 ## Plugins
 
-- [daily-notes-navigation](plugins/daily-notes-navigation) — commands to navigate to previous and next daily notes.
+- [daily-notes-navigation](plugins/daily-notes-navigation): commands to navigate to previous and next daily notes.
 
 ## Usage
 
@@ -14,10 +15,14 @@ npm install
 npm run build
 ```
 
-The built artefacts (`main.js`, `manifest.json`, optional `styles.css`) live next to each plugin's source. They are copied into the vault by the `sync-obsidian-plugins` script in dotfiles.
+The built artefacts (`main.js`, `manifest.json`, optional `styles.css`) live next to each plugin’s source. They are copied into the vault by the [sync-obsidian-plugins](https://github.com/sapegin/dotfiles/blob/master/bin/sync-obsidian-plugins) script.
+
+## Contributing
+
+Bug fixes are welcome, but not new features.
 
 ## Authors and license
 
-[Artem Sapegin](https://sapegin.me) and contributors.
+[Artem Sapegin](https://sapegin.me) and [contributors](https://github.com/sapegin/raccoon-obsidian/graphs/contributors).
 
 MIT License, see the included [License.md](License.md) file.

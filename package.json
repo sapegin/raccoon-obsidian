@@ -2,8 +2,10 @@
   "name": "raccoon-obsidian",
   "private": true,
   "type": "module",
-  "description": "Monorepo of Artem Sapegin's Obsidian plugins, built and installed locally.",
-  "workspaces": ["plugins/*"],
+  "description": "Monorepo of Artem Sapegin's Obsidian plugins, built and installed locally",
+  "workspaces": [
+    "plugins/*"
+  ],
   "scripts": {
     "build": "npm run build --workspaces --if-present",
     "dev": "npm run dev --workspaces --if-present",

@@ -16,7 +16,7 @@ This software has been developed with lots of coffee, buy me one more cup to kee
 
 ## Contributing
 
-Bug fixes are welcome, but not new features. Please take a moment to review the [contributing guidelines](Contributing.md).
+Bug fixes are welcome, but not new features.
 
 ## Authors and license
 
