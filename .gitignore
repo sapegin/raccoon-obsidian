@@ -1,0 +1,18 @@
+# Editors
+.vscode
+.idea
+*.iml
+
+# npm
+node_modules
+
+# Built bundles (rebuilt locally and copied into vault by sync-obsidian-plugins)
+plugins/*/main.js
+plugins/*/main.js.map
+
+# Obsidian runtime state
+plugins/*/data.json
+
+# macOS / caches
+.DS_Store
+.eslintcache
