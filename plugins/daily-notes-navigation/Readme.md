@@ -20,6 +20,6 @@ Bug fixes are welcome, but not new features.
 
 ## Authors and license
 
-[Artem Sapegin](https://sapegin.me) and [contributors](https://github.com/sapegin/obsidian-daily-notes-navigation/graphs/contributors).
+[Artem Sapegin](https://sapegin.me) and [contributors](https://github.com/sapegin/raccoon-obsidian/graphs/contributors).
 
-MIT License, see the included [License.md](License.md) file.
+MIT License, see the included [License.md](../License.md) file.
