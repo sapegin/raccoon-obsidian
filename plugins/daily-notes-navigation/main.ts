@@ -1,4 +1,4 @@
-import { type App, Notice, Plugin, type TFile } from 'obsidian';
+import { Notice, Plugin, type App, type TFile } from 'obsidian';
 
 // HACK: Obsidian doesn't seem to export this type
 interface InternalPluginsConfig {

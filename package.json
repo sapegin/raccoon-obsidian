@@ -1,43 +1,42 @@
 {
   "name": "raccoon-obsidian",
   "private": true,
-  "type": "module",
   "description": "Monorepo of Artem Sapegin's Obsidian plugins, built and installed locally",
-  "workspaces": [
-    "plugins/*"
-  ],
-  "scripts": {
-    "build": "npm run build --workspaces --if-present",
-    "dev": "npm run dev --workspaces --if-present",
-    "pretest": "npm run lint",
-    "test": "npm run build",
-    "posttest": "npm run format",
-    "lint": "eslint . --cache --fix",
-    "format": "prettier --write \"**/*.{js,mjs,cjs,ts,tsx,json,jsonc,md}\"",
-    "prepare": "husky"
-  },
+  "license": "MIT",
   "author": {
     "name": "Artem Sapegin",
     "url": "https://sapegin.me/"
   },
-  "license": "MIT",
-  "engines": {
-    "node": ">=24"
+  "workspaces": [
+    "plugins/*"
+  ],
+  "type": "module",
+  "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "dev": "npm run dev --workspaces --if-present",
+    "test": "oxlint && npm run build",
+    "lint": "oxlint --fix",
+    "format": "oxfmt",
+    "prepare": "husky"
   },
   "devDependencies": {
     "@types/node": "24.10.1",
     "builtin-modules": "5.2.0",
     "esbuild": "0.28.0",
-    "eslint": "9.39.2",
-    "eslint-config-tamia": "9.9.2",
     "husky": "9.1.7",
     "nano-staged": "1.0.2",
     "obsidian": "1.12.3",
-    "prettier": "3.8.3",
+    "oxfmt": "0.50.0",
+    "oxlint": "1.65.0",
+    "oxlint-config-raccoon": "10.0.4",
+    "oxlint-tsgolint": "0.23.0",
     "typescript": "6.0.3"
   },
   "nano-staged": {
-    "*.{js,mjs,cjs,ts,tsx}": "eslint --cache --fix",
-    "*.{js,mjs,cjs,ts,tsx,json,jsonc,md}": "prettier --write"
+    "*.{js,mjs,cjs,ts,tsx}": "oxlint --fix",
+    "*.{js,mjs,cjs,ts,tsx,json,jsonc,md}": "oxfmt"
+  },
+  "engines": {
+    "node": ">=24"
   }
 }

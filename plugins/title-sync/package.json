@@ -3,16 +3,16 @@
   "version": "1.0.0",
   "private": true,
   "description": "Obsidian plugin that synchronies title in Markdown when file is renamed",
-  "main": "main.js",
-  "scripts": {
-    "dev": "node esbuild.config.mjs",
-    "build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production"
-  },
+  "license": "MIT",
   "author": {
     "name": "Artem Sapegin",
     "url": "https://sapegin.me/"
   },
-  "license": "MIT",
+  "main": "main.js",
+  "scripts": {
+    "dev": "node esbuild.config.mjs",
+    "build": "node esbuild.config.mjs production"
+  },
   "peerDependencies": {
     "obsidian": "^1"
   }

@@ -1,4 +1,4 @@
-import { Plugin, type TAbstractFile, TFile } from 'obsidian';
+import { Plugin, TFile, type TAbstractFile } from 'obsidian';
 
 function getBasename(filepath: string) {
   return filepath.split(/[/\\]/).pop()?.replace(/\.md$/, '') ?? '';

@@ -15,4 +15,3 @@ plugins/*/data.json
 
 # macOS / caches
 .DS_Store
-.eslintcache
