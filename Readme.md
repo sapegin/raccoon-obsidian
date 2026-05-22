@@ -7,7 +7,7 @@ Monorepo of [Artem Sapegin](https://sapegin.me/)’s Obsidian plugins, built and
 ## Plugins
 
 - [daily-notes-navigation](plugins/daily-notes-navigation): Commands to navigate to previous and next daily notes.
-- [title-sync](plugins/title-sync): Updates first-level heading in Markdown when file is renamed.
+- [better-title-sync](plugins/better-title-sync): Updates first-level heading in Markdown when file is renamed.
 - [zen-mode-supreme](plugins/zen-mode-supreme): Hides all UI so you can focus on writing.
 
 ## Usage
