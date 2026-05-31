@@ -1,16 +1,42 @@
+/* Default styles: hide distractions */
+
+/* Vault name */
+.zen-mode-supreme .workspace-sidedock-vault-profile,
+body.zen-mode-supreme:not(.is-mobile)
+  .workspace-split.mod-left-split
+  .workspace-sidedock-vault-profile,
+/* Sidebar buttons */
+.zen-mode-supreme .sidebar-toggle-button.mod-right,
+.zen-mode-supreme .sidebar-toggle-button.mod-left,
+/* Status */
+.zen-mode-supreme .status-bar {
+  display: none;
+}
+
+/* Hide sidebar buttons */
+.zen-mode-supreme.mod-macos.is-hidden-frameless:not(.is-popout-window)
+  .workspace
+  .workspace-tabs.mod-top-right-space
+  .workspace-tab-header-container {
+  padding-right: 4px;
+}
+.zen-mode-supreme.mod-macos {
+  --frame-left-space: 60px;
+}
+
+/* Hide tooltips */
+.zen-mode-supreme .tooltip {
+  display: none;
+}
+
+/* Active mode: hide almost everything  */
+
 /* Tabs */
 .zen-mode-supreme-active .mod-root .workspace-tabs .workspace-tab-header-container,
-/* Sidebar buttons */
-.zen-mode-supreme-active .sidebar-toggle-button.mod-left,
-.zen-mode-supreme-active .sidebar-toggle-button.mod-right,
 /* File name header */
 .zen-mode-supreme-active .workspace-leaf-content[data-type=markdown] .view-header,
 /* Scrollbars */
-.zen-mode-supreme-active .cm-editor ::-webkit-scrollbar,
-/* Status */
-.zen-mode-supreme-active .status-bar,
-/* Tooltips */
-.zen-mode-supreme-active .tooltip {
+.zen-mode-supreme-active .cm-editor ::-webkit-scrollbar {
   display: none;
 }
 

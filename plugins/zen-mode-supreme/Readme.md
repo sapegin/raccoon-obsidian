@@ -6,7 +6,8 @@
 
 ## What this plugin does
 
-Hides tabs, filename header, status bar, and so on, as well as makes a few adjustments such as adding extra whitespace and deemphasizes tags and properties.
+- By default, hides vault name, sidebar toggle buttons, and status bar.
+- When zen mode enabled, additionally hides tabs, filename header, status bar, and so on, as well as makes a few adjustments such as adding extra whitespace and deemphasizes tags and properties.
 
 ## Motivation
 
