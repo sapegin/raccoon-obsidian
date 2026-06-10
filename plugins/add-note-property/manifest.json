@@ -1,0 +1,11 @@
+{
+  "id": "add-note-property",
+  "name": "Add Note Property",
+  "version": "1.0.0",
+  "minAppVersion": "0.15.0",
+  "description": "Ensures frontmatter exists, moves inline tags to frontmatter, then adds file property.",
+  "author": "Artem Sapegin",
+  "authorUrl": "https://sapegin.me",
+  "fundingUrl": "https://buymeacoffee.com/sapegin",
+  "isDesktopOnly": false
+}

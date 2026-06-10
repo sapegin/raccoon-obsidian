@@ -1,0 +1,19 @@
+{
+  "name": "@raccoon/add-note-property",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Obsidian plugin that ensures frontmatter exists and opens Add file property",
+  "license": "MIT",
+  "author": {
+    "name": "Artem Sapegin",
+    "url": "https://sapegin.me/"
+  },
+  "main": "main.js",
+  "scripts": {
+    "dev": "node ../../esbuild.config.mjs",
+    "build": "node ../../esbuild.config.mjs production"
+  },
+  "peerDependencies": {
+    "obsidian": "^1"
+  }
+}
