@@ -7,7 +7,7 @@ import {
   type WorkspaceLeaf,
 } from 'obsidian';
 
-type FolderEmojiMap = Record<string, string>;
+type FolderEmojiMap = Partial<Record<string, string>>;
 type UnknownFunction = (...args: unknown[]) => unknown;
 
 const ICON_CLASS = 'folder-emoji-icons-icon';
@@ -296,61 +296,76 @@ export default class FolderEmojiIconsPlugin extends Plugin {
   }
 
   private decorateFolderSuggestion(value: unknown, suggestionEl: HTMLElement) {
-    const folder = this.getFolderFromSuggestion(value);
-    if (folder === null) {
+    const emoji = this.getEmojiFromSuggestion(value);
+    if (emoji === undefined) {
       this.removeFolderEmoji(suggestionEl);
       return;
     }
 
     this.prepareFolderSuggestion(suggestionEl);
-    this.setFolderEmoji(suggestionEl, this.folderEmojis[folder.name], {
+    this.setFolderEmoji(suggestionEl, emoji, {
       beforeSelector: ':scope > .suggestion-content',
     });
   }
 
-  private getFolderFromSuggestion(value: unknown): TFolder | null {
+  private getEmojiFromSuggestion(value: unknown): string | undefined {
     if (value instanceof TAbstractFile) {
-      return value instanceof TFolder ? value : value.parent;
-    }
-
-    if (value instanceof TFolder) {
-      return value;
+      return value instanceof TFolder
+        ? this.folderEmojis[value.name]
+        : this.getEmojiFromConfiguredAncestor(value.parent);
     }
 
     if (!hasProperties(value)) {
-      return null;
+      return undefined;
     }
 
     for (const key of ['item', 'file', 'folder'] as const) {
-      const folder = this.getFolderFromSuggestion(value[key]);
-      if (folder !== null) {
-        return folder;
+      const emoji = this.getEmojiFromSuggestion(value[key]);
+      if (emoji !== undefined) {
+        return emoji;
       }
     }
 
     for (const key of ['path', 'filePath'] as const) {
-      const folder = this.getFolderByPath(value[key]);
-      if (folder !== null) {
-        return folder;
+      const emoji = this.getEmojiFromPath(value[key]);
+      if (emoji !== undefined) {
+        return emoji;
       }
     }
 
-    return null;
+    return undefined;
   }
 
-  private getFolderByPath(path: unknown): TFolder | null {
+  private getEmojiFromPath(path: unknown): string | undefined {
     if (typeof path !== 'string') {
-      return null;
+      return undefined;
     }
 
     const file =
       this.app.vault.getAbstractFileByPath(path) ??
       this.app.vault.getAbstractFileByPath(`${path}.md`);
     if (file === null) {
-      return null;
+      return undefined;
     }
 
-    return file instanceof TFolder ? file : file.parent;
+    return file instanceof TFolder
+      ? this.folderEmojis[file.name]
+      : this.getEmojiFromConfiguredAncestor(file.parent);
+  }
+
+  private getEmojiFromConfiguredAncestor(
+    folder: TFolder | null
+  ): string | undefined {
+    let currentFolder = folder;
+    while (currentFolder !== null) {
+      const emoji = this.folderEmojis[currentFolder.name];
+      if (emoji !== undefined) {
+        return emoji;
+      }
+      currentFolder = currentFolder.parent;
+    }
+
+    return undefined;
   }
 
   private prepareFolderSuggestion(suggestionEl: HTMLElement) {
