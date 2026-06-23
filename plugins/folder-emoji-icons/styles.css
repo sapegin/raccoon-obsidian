@@ -1,0 +1,19 @@
+.folder-emoji-icons-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 var(--icon-size);
+  width: var(--icon-size);
+  height: var(--icon-size);
+  margin-inline-end: var(--size-4-1);
+  font-size: calc(var(--icon-size) * 0.9);
+  line-height: 1;
+}
+
+.tree-item-self > .folder-emoji-icons-icon {
+  --icon-size: var(--icon-xs);
+}
+
+.suggestion-item.folder-emoji-icons-suggestion {
+  align-items: center;
+}

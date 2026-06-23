@@ -1,0 +1,11 @@
+{
+  "id": "folder-emoji-icons",
+  "name": "Folder Emoji Icons",
+  "version": "1.0.0",
+  "minAppVersion": "0.15.0",
+  "description": "Adds emoji icons to folders.",
+  "author": "Artem Sapegin",
+  "authorUrl": "https://sapegin.me",
+  "fundingUrl": "https://buymeacoffee.com/sapegin",
+  "isDesktopOnly": false
+}

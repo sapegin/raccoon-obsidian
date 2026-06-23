@@ -14,7 +14,7 @@ export default class ZenModeSupremePlugin extends Plugin {
   public onunload() {
     document.body.classList.remove(
       'zen-mode-supreme',
-      'zen-mode-supreme-active',
+      'zen-mode-supreme-active'
     );
   }
 
