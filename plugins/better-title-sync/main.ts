@@ -6,8 +6,8 @@ function getBasename(filepath: string) {
 
 export default class TitleSyncPlugin extends Plugin {
   private handleRename = (file: TAbstractFile, oldPath: string) => {
-    // Skip folders
-    if (file instanceof TFile === false) {
+    // Skip folders and non-Markdown files
+    if (file instanceof TFile === false || file.extension !== 'md') {
       return;
     }
 
