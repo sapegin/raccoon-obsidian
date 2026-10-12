@@ -14,22 +14,22 @@
   "scripts": {
     "build": "npm run build --workspaces --if-present",
     "dev": "npm run dev --workspaces --if-present",
-    "test": "oxlint --fix && npm run build",
-    "lint": "oxlint --fix",
-    "format": "oxfmt",
+    "test": "oxlint && oxfmt --check &&  npm run build",
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix && oxfmt --write",
     "prepare": "husky"
   },
   "devDependencies": {
-    "@types/node": "24.10.1",
-    "esbuild": "0.28.0",
+    "@types/node": "24.13.6",
+    "esbuild": "0.28.2",
     "husky": "9.1.7",
     "nano-staged": "1.0.2",
-    "obsidian": "1.12.3",
-    "oxfmt": "0.50.0",
-    "oxlint": "1.65.0",
-    "oxlint-config-raccoon": "10.0.4",
-    "oxlint-tsgolint": "0.23.0",
-    "typescript": "6.0.3"
+    "obsidian": "1.14.4",
+    "oxfmt": "0.72.0",
+    "oxlint": "1.87.0",
+    "oxlint-config-raccoon": "10.9.0",
+    "oxlint-tsgolint": "7.0.2003",
+    "typescript": "7.0.2"
   },
   "nano-staged": {
     "*.{js,mjs,cjs,ts,tsx}": "oxlint --fix",
@@ -37,5 +37,8 @@
   },
   "engines": {
     "node": ">=24"
+  },
+  "allowScripts": {
+    "esbuild": true
   }
 }

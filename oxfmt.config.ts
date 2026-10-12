@@ -1,7 +1,7 @@
-import { defineConfig, type OxfmtConfig } from 'oxfmt';
-import config from 'oxlint-config-raccoon/oxfmt' with { type: 'json' };
+import { defineConfig } from 'oxfmt';
+import oxfmt from 'oxlint-config-raccoon/oxfmt';
 
 export default defineConfig({
-  ...(config as OxfmtConfig),
+  ...oxfmt,
   ignorePatterns: ['plugins/*/main.js'],
 });

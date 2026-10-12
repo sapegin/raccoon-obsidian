@@ -1,8 +1,8 @@
-import { defineConfig, type OxlintConfig } from 'oxlint';
-import config from 'oxlint-config-raccoon/typescript' with { type: 'json' };
+import { defineConfig } from 'oxlint';
+import typescript from 'oxlint-config-raccoon/typescript';
 
 export default defineConfig({
-  extends: [config as unknown as OxlintConfig],
+  extends: [typescript],
   options: {
     typeAware: true,
     typeCheck: true,
