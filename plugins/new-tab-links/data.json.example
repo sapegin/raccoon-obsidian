@@ -1,0 +1,14 @@
+{
+  "actions": [
+    {
+      "label": "Example note",
+      "icon": "file-text",
+      "file": "Example.md"
+    },
+    {
+      "label": "Go to file",
+      "icon": "search",
+      "command": "switcher:open"
+    }
+  ]
+}

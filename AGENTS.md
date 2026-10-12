@@ -1,3 +1,5 @@
+Ecosystem context: read `~/dotfiles/ai/raccoonarium.md`.
+
 Monorepo of Obsidian plugins. One workspace per plugin under `plugins/<id>/`.
 
 ## Plugin contract
@@ -21,7 +23,13 @@ npm run format           # format code
 
 ## Install
 
-Plugins are installed into vaults by [`sync-obsidian-plugins`](https://github.com/sapegin/dotfiles/blob/master/bin/sync-obsidian-plugins) in the dotfiles repo. That script builds, smoke-tests, and copies `main.js`, `manifest.json`, and `styles.css` (when present) into each target vault, then updates `~/dotfiles/obsidian/installed-plugins.json` with git SHA and content hashes.
+Plugins are installed into vaults by [`sync-obsidian-plugins`](https://github.com/sapegin/dotfiles/blob/master/bin/sync-obsidian-plugins) in the dotfiles repo. That script builds, smoke-tests, and copies `main.js`, `manifest.json`, and `styles.css` (when present) into each target vault under `.obsidian/plugins/obsidian-<id>/`. It must **not** copy or overwrite `data.json` in the vault.
+
+## Plugin data (`loadData()`)
+
+Plugins such as [folder-emoji-icons](plugins/folder-emoji-icons) and [new-tab-links](plugins/new-tab-links) read user config from `data.json` via Obsidian’s `loadData()` (path: `.obsidian/plugins/obsidian-<id>/data.json` in each vault). That file is **vault-local** — do not put `data.json` in the monorepo. Ship an optional `data.json.example` next to the plugin source for reference; the user copies or edits `data.json` only in the installed plugin folder.
+
+Sync updates `~/dotfiles/obsidian/installed-plugins.json` with git SHA and content hashes.
 
 ## When adding a new plugin
 

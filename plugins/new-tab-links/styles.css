@@ -1,0 +1,15 @@
+.new-tab-links-hidden-default {
+  display: none !important;
+}
+
+/* Match Squirrelsong empty-tab secondary buttons when theme vars are present */
+.empty-state-action-list > .text-icon-button.new-tab-links-action {
+  border-radius: var(--tab-radius-active);
+  color: var(--sqrl-secondary-button-foreground);
+  border-color: var(--sqrl-secondary-button-border);
+  background-color: var(--sqrl-secondary-button-background);
+}
+
+.empty-state-action-list > .text-icon-button.new-tab-links-action:hover {
+  background-color: var(--sqrl-secondary-button-hover-background);
+}

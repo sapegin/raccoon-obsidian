@@ -10,6 +10,7 @@ Monorepo of [Artem Sapegin](https://sapegin.me/)’s Obsidian plugins, built and
 - [better-title-sync](plugins/better-title-sync): Updates first-level heading in Markdown when file is renamed.
 - [daily-notes-navigation](plugins/daily-notes-navigation): Commands to navigate to previous and next daily notes.
 - [folder-emoji-icons](plugins/folder-emoji-icons): Adds emoji icons to folders.
+- [new-tab-links](plugins/new-tab-links): Adds configurable links to the new tab page.
 - [zen-mode-supreme](plugins/zen-mode-supreme): Hides all UI so you can focus on writing.
 
 ## Usage
@@ -20,6 +21,8 @@ npm run build
 ```
 
 The built artefacts (`main.js`, `manifest.json`, optional `styles.css`) live next to each plugin’s source. They are copied into the vault by the [sync-obsidian-plugins](https://github.com/sapegin/dotfiles/blob/master/bin/sync-obsidian-plugins) script.
+
+User config for plugins that use `loadData()` lives in each vault’s `.obsidian/plugins/obsidian-<id>/data.json` only (see `data.json.example` where provided); sync does not overwrite it.
 
 ## Contributing
 

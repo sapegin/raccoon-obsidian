@@ -1,0 +1,19 @@
+{
+  "name": "@raccoon/new-tab-links",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Obsidian plugin that adds configurable links to the new tab page",
+  "license": "MIT",
+  "author": {
+    "name": "Artem Sapegin",
+    "url": "https://sapegin.me/"
+  },
+  "main": "main.js",
+  "scripts": {
+    "dev": "node ../../esbuild.config.mjs",
+    "build": "node ../../esbuild.config.mjs production"
+  },
+  "peerDependencies": {
+    "obsidian": "^1"
+  }
+}
