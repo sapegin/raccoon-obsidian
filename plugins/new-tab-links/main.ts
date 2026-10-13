@@ -1,9 +1,17 @@
-import { Notice, Plugin, TFile, setIcon, type App } from 'obsidian';
+import {
+  Notice,
+  Platform,
+  Plugin,
+  TFile,
+  setIcon,
+  type App,
+  type View,
+} from 'obsidian';
 
 const EMPTY_VIEW_TYPE = 'empty';
 const ACTION_MARKER_CLASS = 'new-tab-links-action';
-const NATIVE_BUTTON_CLASSES =
-  'text-icon-button mod-pill empty-state-action tappable';
+const HIDDEN_DEFAULT_CLASS = 'new-tab-links-hidden-default';
+const BUTTON_CLASSES = 'text-icon-button mod-pill empty-state-action tappable';
 
 interface NewTabAction {
   label: string;
@@ -12,15 +20,28 @@ interface NewTabAction {
   file?: string;
 }
 
-interface EmptyViewWithActions {
+interface EmptyViewWithActions extends View {
   actionListEl?: HTMLElement;
 }
 
 // HACK: Obsidian doesn't export executeCommandById in the public API
 interface InternalCommands {
   commands?: {
-    executeCommandById(id: string): void;
+    executeCommandById(id: string, source?: unknown): void;
   };
+}
+
+/**
+ * Shared across plugin reloads so onOpen stays wired to the live plugin
+ * instance.
+ */
+let activePlugin: NewTabLinksPlugin | null = null;
+let emptyViewOnOpenHookInstalled = false;
+let originalEmptyViewOnOpen: ((this: EmptyViewWithActions) => unknown) | null =
+  null;
+
+function setActivePlugin(plugin: NewTabLinksPlugin | null) {
+  activePlugin = plugin;
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -75,72 +96,229 @@ function parseActions(value: unknown): NewTabAction[] {
   return actions;
 }
 
+function installEmptyViewOnOpenHook(view: View) {
+  if (emptyViewOnOpenHookInstalled) {
+    return;
+  }
+
+  const proto = Object.getPrototypeOf(view) as {
+    onOpen?: (this: EmptyViewWithActions) => unknown;
+  };
+  const { onOpen } = proto;
+  if (onOpen === undefined) {
+    return;
+  }
+
+  originalEmptyViewOnOpen = onOpen;
+  proto.onOpen = async function (this: EmptyViewWithActions) {
+    const result = originalEmptyViewOnOpen?.call(this);
+    await Promise.resolve(result);
+    activePlugin?.decorateEmptyView(this);
+    return undefined;
+  };
+  emptyViewOnOpenHookInstalled = true;
+}
+
 export default class NewTabLinksPlugin extends Plugin {
   private actions: NewTabAction[] = [];
+  private readonly observedActionLists = new WeakSet<HTMLElement>();
+  private decorateTimerId: ReturnType<typeof globalThis.setTimeout> | undefined;
 
   public async onload() {
+    setActivePlugin(this);
+    this.register(() => {
+      if (activePlugin === this) {
+        setActivePlugin(null);
+      }
+      globalThis.clearTimeout(this.decorateTimerId);
+    });
+
     this.actions = parseActions(await this.loadData());
 
     this.registerEvent(
-      this.app.workspace.on('layout-change', this.decorateEmptyViews)
+      this.app.workspace.on('layout-change', this.scheduleDecorateEmptyViews)
     );
-    this.app.workspace.onLayoutReady(this.decorateEmptyViews);
+    this.registerEvent(
+      this.app.workspace.on(
+        'active-leaf-change',
+        this.scheduleDecorateEmptyViews
+      )
+    );
+    this.app.workspace.onLayoutReady(this.scheduleDecorateEmptyViews);
   }
 
-  private readonly decorateEmptyViews = () => {
+  private readonly scheduleDecorateEmptyViews = () => {
+    if (activePlugin !== this) {
+      return;
+    }
+
+    globalThis.clearTimeout(this.decorateTimerId);
+    const delay = Platform.isMobileApp ? 50 : 0;
+    this.decorateTimerId = globalThis.setTimeout(() => {
+      this.decorateAllEmptyStates();
+    }, delay);
+  };
+
+  private getActionListElement(view: View): HTMLElement | null {
+    const emptyView = view as EmptyViewWithActions;
+    const actionListElement = emptyView.actionListEl;
+    if (actionListElement instanceof HTMLElement) {
+      return actionListElement;
+    }
+
+    return view.containerEl.querySelector('.empty-state-action-list');
+  }
+
+  private collectActionListElements(): HTMLElement[] {
+    const found = new Set<HTMLElement>();
+    for (const node of this.app.workspace.containerEl.querySelectorAll(
+      '.workspace-leaf-content[data-type="empty"] .empty-state-action-list'
+    )) {
+      if (node instanceof HTMLElement) {
+        found.add(node);
+      }
+    }
+
+    return [...found];
+  }
+
+  private observeActionList(actionListElement: HTMLElement) {
+    if (this.observedActionLists.has(actionListElement)) {
+      return;
+    }
+    this.observedActionLists.add(actionListElement);
+
+    const observer = new MutationObserver(() => {
+      this.scheduleDecorateEmptyViews();
+    });
+    observer.observe(actionListElement, { childList: true });
+    this.register(() => {
+      observer.disconnect();
+    });
+  }
+
+  public decorateEmptyView(view: View) {
+    if (view.getViewType() !== EMPTY_VIEW_TYPE) {
+      return;
+    }
+
+    installEmptyViewOnOpenHook(view);
+
+    if (this.actions.length === 0) {
+      return;
+    }
+
+    const actionListElement = this.getActionListElement(view);
+    if (actionListElement === null) {
+      return;
+    }
+
+    this.observeActionList(actionListElement);
+    this.decorateActionList(actionListElement);
+  }
+
+  private decorateAllEmptyStates() {
     if (this.actions.length === 0) {
       return;
     }
 
     for (const leaf of this.app.workspace.getLeavesOfType(EMPTY_VIEW_TYPE)) {
-      const emptyView = leaf.view as unknown as EmptyViewWithActions;
-      const { actionListEl } = emptyView;
-      if (actionListEl === undefined) {
-        continue;
-      }
-      this.decorateActionList(actionListEl);
+      this.decorateEmptyView(leaf.view);
     }
-  };
 
-  private decorateActionList(actionListEl: HTMLElement) {
-    if (
-      actionListEl.querySelector(`:scope > .${ACTION_MARKER_CLASS}`) !== null
-    ) {
+    for (const actionListElement of this.collectActionListElements()) {
+      this.observeActionList(actionListElement);
+      this.decorateActionList(actionListElement);
+    }
+  }
+
+  private getVisibleDefaultButtons(
+    actionListElement: HTMLElement
+  ): HTMLElement[] {
+    return [...actionListElement.children].filter(
+      (child): child is HTMLElement =>
+        child instanceof HTMLElement &&
+        !child.hasClass(ACTION_MARKER_CLASS) &&
+        !child.hasClass(HIDDEN_DEFAULT_CLASS)
+    );
+  }
+
+  private decorateActionList(actionListElement: HTMLElement) {
+    const customButtons = actionListElement.querySelectorAll(
+      `:scope > .${ACTION_MARKER_CLASS}`
+    );
+    const visibleDefaults = this.getVisibleDefaultButtons(actionListElement);
+
+    if (customButtons.length > 0 && visibleDefaults.length === 0) {
       return;
     }
 
-    for (const child of actionListEl.children) {
+    for (const button of customButtons) {
+      button.remove();
+    }
+
+    for (const child of actionListElement.children) {
       if (!(child instanceof HTMLElement)) {
         continue;
       }
-      child.addClass('new-tab-links-hidden-default');
+      if (child.hasClass(ACTION_MARKER_CLASS)) {
+        continue;
+      }
+      child.addClass(HIDDEN_DEFAULT_CLASS);
     }
 
     for (const action of this.actions) {
-      this.addActionButton(actionListEl, action);
+      this.addActionButton(actionListElement, action);
+    }
+
+    const emptyStateElement = actionListElement.closest('.empty-state');
+    if (emptyStateElement instanceof HTMLElement) {
+      emptyStateElement.addClass('new-tab-links-active');
     }
   }
 
-  private addActionButton(actionListEl: HTMLElement, action: NewTabAction) {
-    const buttonEl = actionListEl.createDiv({
-      cls: `${NATIVE_BUTTON_CLASSES} ${ACTION_MARKER_CLASS}`,
+  private addActionButton(
+    actionListElement: HTMLElement,
+    action: NewTabAction
+  ) {
+    const buttonElement = actionListElement.createDiv({
+      cls: `${BUTTON_CLASSES} ${ACTION_MARKER_CLASS}`,
+      attr: { tabIndex: 0, role: 'button' },
+    });
+    const iconElement = buttonElement.createSpan({ cls: 'text-button-icon' });
+    buttonElement.createSpan({
+      cls: 'text-button-label',
+      text: action.label,
     });
 
-    buttonEl.addEventListener('click', () => {
-      void this.runAction(action);
+    const onActivate = (event: Event) => {
+      event.preventDefault();
+      void this.runAction(action, event);
+    };
+
+    buttonElement.addEventListener('click', onActivate);
+    buttonElement.addEventListener('keydown', (event) => {
+      if (event.isComposing || event.defaultPrevented) {
+        return;
+      }
+      if (event.key !== ' ' && event.key !== 'Enter') {
+        return;
+      }
+      event.preventDefault();
+      onActivate(event);
     });
 
     if (action.icon !== undefined && action.icon !== '') {
-      setIcon(buttonEl, action.icon);
+      setIcon(iconElement, action.icon);
+    } else {
+      iconElement.hide();
     }
-
-    buttonEl.createDiv({ cls: 'text-button-label', text: action.label });
   }
 
-  private async runAction(action: NewTabAction) {
+  private async runAction(action: NewTabAction, sourceEvent?: Event) {
     if (action.command !== undefined) {
       const app = this.app as App & InternalCommands;
-      app.commands?.executeCommandById(action.command);
+      app.commands?.executeCommandById(action.command, sourceEvent);
       return;
     }
 
@@ -154,7 +332,8 @@ export default class NewTabLinksPlugin extends Plugin {
       return;
     }
 
-    const leaf = this.app.workspace.getMostRecentLeaf();
+    const leaf =
+      this.app.workspace.activeLeaf ?? this.app.workspace.getMostRecentLeaf();
     if (leaf === null) {
       await this.app.workspace.getLeaf().openFile(file);
       return;

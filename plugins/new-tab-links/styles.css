@@ -13,3 +13,32 @@
 .empty-state-action-list > .text-icon-button.new-tab-links-action:hover {
   background-color: var(--sqrl-secondary-button-hover-background);
 }
+
+/* Obsidian hides the whole action list in very narrow empty-state containers */
+@container empty-state (max-width: 70px) {
+  .empty-state-action-list:has(> .new-tab-links-action) {
+    display: inline-flex !important;
+  }
+}
+
+/*
+  Mobile: Obsidian adds extra action-list top margin and caps container height.
+  Bottom tab chrome makes a geometrically centered block look too low.
+*/
+.is-mobile .empty-state.new-tab-links-active {
+  box-sizing: border-box;
+  padding-bottom: 10vh;
+}
+
+.is-mobile .empty-state.new-tab-links-active .empty-state-container {
+  max-height: none;
+  margin-block: 0;
+}
+
+.is-mobile .empty-state.new-tab-links-active .empty-state-title {
+  display: none;
+}
+
+.is-mobile .empty-state.new-tab-links-active .empty-state-action-list {
+  margin-top: 0;
+}

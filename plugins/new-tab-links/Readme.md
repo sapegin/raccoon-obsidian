@@ -13,7 +13,7 @@ Replaces the default empty-tab action buttons with entries from plugin data. Eac
 Add actions to the plugin data file in your vault:
 
 ```text
-<Vault>/.obsidian/plugins/new-tab-links/data.json
+<Vault>/.obsidian/plugins/obsidian-new-tab-links/data.json
 ```
 
 See [`data.json.example`](data.json.example) in this folder for the shape. Each action needs a `label` and either a `file` path or a `command` ID (not both). Optional `icon` uses Obsidian’s icon id (same as in the app).
